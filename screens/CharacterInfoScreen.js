@@ -40,7 +40,7 @@ export default function CharacterInfoScreen({
   }, [characterData]);
 
   if (!characterData) {
-    return (
+    return ( 
       <View style={styles.container}>
         <Text style={styles.header}>Loading...</Text>
       </View>
@@ -59,100 +59,129 @@ export default function CharacterInfoScreen({
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Character Info</Text>
 
-      <Text style={styles.label}>Character Name</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.name}
-        onChangeText={(val) => handleInputChange('name', val)}
-        placeholder="Enter Character Name"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Character Name</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.name}
+          onChangeText={(val) => handleInputChange('name', val)}
+          placeholder="Enter Character Name"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Player Name</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.playerName}
-        onChangeText={(val) => handleInputChange('playerName', val)}
-        placeholder="Enter Player Name"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Player Name</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.playerName}
+          onChangeText={(val) => handleInputChange('playerName', val)}
+          placeholder="Enter Player Name"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Career Path</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.careerPath}
-        onChangeText={(val) => handleInputChange('careerPath', val)}
-        placeholder="Enter Career Path"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Career Path</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.careerPath}
+          onChangeText={(val) => handleInputChange('careerPath', val)}
+          placeholder="Enter Career Path"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Rank</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.rank}
-        onChangeText={(val) => handleInputChange('rank', val)}
-        placeholder="Enter Rank"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Rank</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.rank}
+          onChangeText={(val) => handleInputChange('rank', val)}
+          placeholder="Enter Rank"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Home World</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.homeWorld}
-        onChangeText={(val) => handleInputChange('homeWorld', val)}
-        placeholder="Enter Home World"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Home World</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.homeWorld}
+          onChangeText={(val) => handleInputChange('homeWorld', val)}
+          placeholder="Enter Home World"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Motivation</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.motivation}
-        onChangeText={(val) => handleInputChange('motivation', val)}
-        placeholder="Enter Motivation"
-        placeholderTextColor="#dfddd3"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Motivation</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.motivation}
+          onChangeText={(val) => handleInputChange('motivation', val)}
+          placeholder="Enter Motivation"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Description</Text>
-      <TextInput
-        style={[styles.input, styles.textArea, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.description}
-        onChangeText={(val) => handleInputChange('description', val)}
-        placeholder="Enter Description"
-        placeholderTextColor="#dfddd3"
-        multiline
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, styles.textArea, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.description}
+          onChangeText={(val) => handleInputChange('description', val)}
+          placeholder="Enter Description"
+          placeholderTextColor="#dfddd3"
+          multiline
+        />
+      </View>
 
-      <Text style={styles.label}>Experience Points</Text>
+      <View style={styles.section}>
+        <Text style={styles.label}>Experience Points</Text>
+        <Text style={styles.labelSmall}>XP to Spend</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.xpToSpend || ''}
+          onChangeText={(val) => handleInputChange('xpToSpend', val)}
+          placeholder="Enter XP to Spend"
+          placeholderTextColor="#dfddd3"
+          keyboardType="numeric"
+        />
+        <Text style={styles.labelSmall}>Total XP Spent</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.totalXpSpent || ''}
+          onChangeText={(val) => handleInputChange('totalXpSpent', val)}
+          placeholder="Enter Total XP Spent"
+          placeholderTextColor="#dfddd3"
+          keyboardType="numeric"
+        />
+      </View>
 
-      <Text style={styles.label}>XP to Spend</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.xpToSpend || ''}
-        onChangeText={(val) => handleInputChange('xpToSpend', val)}
-        placeholder="Enter XP to Spend"
-        placeholderTextColor="#dfddd3"
-        keyboardType="numeric"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Mutations</Text>
+        <TextInput
+          style={[styles.input, styles.textArea, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={characterData.mutations || ''}
+          onChangeText={(val) => handleInputChange('mutations', val)}
+          placeholder="Enter Mutations"
+          placeholderTextColor="#dfddd3"
+          multiline
+        />
+      </View>
 
-      <Text style={styles.label}>Total XP Spent</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={characterData.totalXpSpent || ''}
-        onChangeText={(val) => handleInputChange('totalXpSpent', val)}
-        placeholder="Enter Total XP Spent"
-        placeholderTextColor="#dfddd3"
-        keyboardType="numeric"
-      />
+      <View style={styles.spacer} />
     </ScrollView>
   );
 }
@@ -162,29 +191,47 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#5d6363',
     padding: 16,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     color: '#dfddd3',
     marginBottom: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'SpaceGrotesk_700Bold',
+  },
+  section: {
+    marginBottom: 24,
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#dfddd3',
     marginBottom: 8,
+    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  labelSmall: {
+    fontSize: 16,
+    color: '#dfddd3',
+    marginBottom: 4,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   input: {
     backgroundColor: '#535d75',
     color: '#dfddd3',
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 16,
+    padding: 10,
+    borderRadius: 8,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   textArea: {
-    height: 100, // Larger height for multi-line input
+    minHeight: 100,
+    textAlignVertical: 'top',
   },
   readOnly: {
-    backgroundColor: '#5d6363',
+    backgroundColor: '#3e4551',
+  },
+  spacer: {
+    height: 100,
   },
 });

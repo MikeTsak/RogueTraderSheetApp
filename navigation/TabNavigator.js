@@ -15,123 +15,74 @@ import CharacterInfoScreen from '../screens/CharacterInfoScreen';
 import CharacteristicsScreen from '../screens/CharacteristicsScreen';
 import SkillsScreen from '../screens/SkillsScreen';
 import TalentsTraitsScreen from '../screens/TalentsTraitsScreen';
-import SpecialAbilitiesScreen from '../screens/SpecialAbilitiesScreen';
-import PsychicDisciplinesScreen from '../screens/PsychicDisciplinesScreen';
-import XPAndOtherStatsScreen from '../screens/XPAndOtherStatsScreen';
+import GearScreen from '../screens/GearScreen';
+import Notesscreen from '../screens/Notesscreen';
+import StatistcsScreen from '../screens/StatistcsScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function TabNavigator({ route, navigation }) {
-  // We get characterId from route.params
   const { characterId } = route.params || {};
-
   const [isEditable, setIsEditable] = useState(false);
   const [characterData, setCharacterData] = useState(null);
-  const [allCharacters, setAllCharacters] = useState([]);
 
   useEffect(() => {
-    loadCharacters();
-  }, []);
-
-  async function loadCharacters() {
-    try {
-      const jsonValue = await AsyncStorage.getItem('ROGUE_TRADER_CHARACTERS');
-      if (jsonValue) {
-        const parsed = JSON.parse(jsonValue);
-        setAllCharacters(parsed);
-
-        // Find the one matching characterId
-        const current = parsed.find((c) => c.id === characterId);
-        if (current) {
-          setCharacterData(current);
+    const loadCharacterData = async () => {
+      try {
+        const storedCharacters = await AsyncStorage.getItem('ROGUE_TRADER_CHARACTERS');
+        if (storedCharacters) {
+          const characters = JSON.parse(storedCharacters);
+          const selectedCharacter = characters.find((c) => c.id === characterId);
+          setCharacterData(selectedCharacter || null);
         }
+      } catch (error) {
+        console.error('Error loading character data:', error);
       }
-    } catch (e) {
-      console.log('Error loading characters:', e);
-    }
-  }
+    };
 
-  // Called when user presses the floppy disk
-  async function saveCharacterData() {
-    if (!characterData) return;
-    // Update that character in the array
-    const updatedList = allCharacters.map((c) => {
-      if (c.id === characterData.id) {
-        return characterData; // the updated data
-      }
-      return c;
-    });
-    setAllCharacters(updatedList);
+    loadCharacterData();
+  }, [characterId]);
 
+  const saveCharacterData = async () => {
     try {
+      const storedCharacters = await AsyncStorage.getItem('ROGUE_TRADER_CHARACTERS');
+      const characters = storedCharacters ? JSON.parse(storedCharacters) : [];
+      const updatedCharacters = characters.map((c) =>
+        c.id === characterData.id ? characterData : c
+      );
+
       await AsyncStorage.setItem(
         'ROGUE_TRADER_CHARACTERS',
-        JSON.stringify(updatedList)
+        JSON.stringify(updatedCharacters)
       );
-    } catch (e) {
-      console.log('Error saving character:', e);
+    } catch (error) {
+      console.error('Error saving character data:', error);
     }
-  }
+  };
 
-  // Toggle editing / saving
-  function handleEditPress() {
+  const handleEditPress = () => {
     if (isEditable) {
-      // Save data
       saveCharacterData();
       setIsEditable(false);
     } else {
-      // Enter edit mode
       setIsEditable(true);
     }
-  }
+  };
 
-  // Custom header with hamburger + character name (or Loading...)
-  function renderCustomHeader() {
-    return (
-      <View style={styles.customHeader}>
-        {/* Hamburger Menu Icon */}
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <Icon name="menu" size={24} color="#dfddd3" />
-        </TouchableOpacity>
-
-        {/* Character Name or Loading... */}
-        <Text style={styles.headerTitle}>
-          {characterData ? characterData.name : 'Loading...'}
-        </Text>
-      </View>
-    );
-  }
-
-  // The pinned bottom-left button (pencil ↔ floppy)
-  function renderEditSaveButton() {
-    return (
-      <View style={styles.editButtonContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
-          <Icon
-            name={isEditable ? 'save' : 'edit'}
-            size={24}
-            color="#dfddd3"
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  // A small “developed by miketsak.gr” footer at the bottom center
-  function renderFooter() {
-    return (
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>developed by miketsak.gr</Text>
-      </View>
-    );
-  }
+  const renderCustomHeader = () => (
+    <View style={styles.customHeader}>
+      <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        <Icon name="menu" size={24} color="#dfddd3" />
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>
+        {characterData ? characterData.name : 'Loading...'}
+      </Text>
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#301a19' }}>
-      {/** 1) Our custom top bar (hamburger + name) */}
       {renderCustomHeader()}
-
-      {/** 2) The actual tab navigator */}
       <View style={{ flex: 1 }}>
         <Tab.Navigator
           screenOptions={{
@@ -141,91 +92,63 @@ export default function TabNavigator({ route, navigation }) {
             swipeEnabled: true,
           }}
         >
-          <Tab.Screen
-            name="CharacterInfo"
-            options={{ tabBarLabel: 'CHAR' }}
-          >
-            {(props) => (
+          <Tab.Screen name="CharacterInfo">
+            {() => (
               <CharacterInfoScreen
-                {...props}
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="Characteristics"
-            options={{ tabBarLabel: 'STATS' }}
-          >
-            {(props) => (
+          <Tab.Screen name="Characteristics">
+            {() => (
               <CharacteristicsScreen
-                {...props}
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="Skills"
-            options={{ tabBarLabel: 'SKILLS' }}
-          >
-            {(props) => (
+          <Tab.Screen name="Skills">
+            {() => (
               <SkillsScreen
-                {...props}
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="TalentsTraits"
-            options={{ tabBarLabel: 'T&T' }}
-          >
-            {(props) => (
+          <Tab.Screen name="TalentsTraits">
+            {() => (
               <TalentsTraitsScreen
-                {...props}
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="SpecialAbilities"
-            options={{ tabBarLabel: 'ABILITIES' }}
-          >
-            {(props) => (
-              <SpecialAbilitiesScreen
-                {...props}
+          <Tab.Screen name="Gear">
+            {() => (
+              <GearScreen
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="PsychicDisciplines"
-            options={{ tabBarLabel: 'PSYCHIC' }}
-          >
-            {(props) => (
-              <PsychicDisciplinesScreen
-                {...props}
+          <Tab.Screen name="Statistics">
+            {() => (
+              <StatistcsScreen
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen
-            name="XPAndOtherStats"
-            options={{ tabBarLabel: 'XP / ETC' }}
-          >
-            {(props) => (
-              <XPAndOtherStatsScreen
-                {...props}
+          <Tab.Screen name="Notes">
+            {() => (
+              <Notesscreen
                 characterData={characterData}
                 setCharacterData={setCharacterData}
                 isEditable={isEditable}
@@ -233,12 +156,14 @@ export default function TabNavigator({ route, navigation }) {
             )}
           </Tab.Screen>
         </Tab.Navigator>
-
-        {/** 3) The pencil/floppy button */}
-        {renderEditSaveButton()}
-
-        {/** 4) The small footer */}
-        {renderFooter()}
+      </View>
+      <View style={styles.editButtonContainer}>
+        <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
+          <Icon name={isEditable ? 'save' : 'edit'} size={24} color="#dfddd3" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>developed by miketsak.gr</Text>
       </View>
     </SafeAreaView>
   );
@@ -260,7 +185,7 @@ const styles = StyleSheet.create({
   },
   editButtonContainer: {
     position: 'absolute',
-    bottom: 50, // or whatever looks good
+    bottom: 50,
     right: 20,
   },
   editButton: {

@@ -3,14 +3,13 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   StyleSheet,
+  TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DiceRollerScreen from '../modules/DiceRollerScreen';
 
-// Define all skills and their associated characteristics
 const skills = [
   { name: 'Acrobatics', characteristic: 'agility' },
   { name: 'Awareness', characteristic: 'perception' },
@@ -64,28 +63,13 @@ const skills = [
 ];
 
 export default function SkillsScreen({ isEditable }) {
-  const defaultCharacteristics = {
-    strength: 0,
-    agility: 0,
-    toughness: 0,
-    intelligence: 0,
-    perception: 0,
-    willPower: 0,
-    fellowship: 0,
-  };
-
-  const [characteristics, setCharacteristics] = useState(defaultCharacteristics);
-  const [skillStates, setSkillStates] = useState(() => {
-    const initialStates = {};
-    skills.forEach((skill) => {
-      initialStates[skill.name] = {
-        dots: 0,
-        bonus: 0,
-        notes: '',
-      };
-    });
-    return initialStates;
-  });
+  const [characteristics, setCharacteristics] = useState({});
+  const [skillStates, setSkillStates] = useState(() =>
+    skills.reduce((acc, skill) => {
+      acc[skill.name] = { dots: 0, bonus: 0, notes: '' };
+      return acc;
+    }, {})
+  );
 
   const [isDiceRollerVisible, setDiceRollerVisible] = useState(false);
   const [activeSkillValue, setActiveSkillValue] = useState(null);
@@ -99,12 +83,11 @@ export default function SkillsScreen({ isEditable }) {
         if (storedCharacteristics) {
           setCharacteristics(JSON.parse(storedCharacteristics));
         }
-
         if (storedSkillStates) {
           setSkillStates(JSON.parse(storedSkillStates));
         }
       } catch (error) {
-        console.error('Failed to load data from local storage:', error);
+        console.error('Failed to load data:', error);
       }
     };
 
@@ -117,7 +100,7 @@ export default function SkillsScreen({ isEditable }) {
         await AsyncStorage.setItem('characteristics', JSON.stringify(characteristics));
         await AsyncStorage.setItem('skillStates', JSON.stringify(skillStates));
       } catch (error) {
-        console.error('Failed to save data to local storage:', error);
+        console.error('Failed to save data:', error);
       }
     };
 
@@ -125,20 +108,17 @@ export default function SkillsScreen({ isEditable }) {
   }, [characteristics, skillStates]);
 
   const calculateSkillValue = (skillName, characteristicName) => {
-    const characteristicValue =
-      parseInt(characteristics[characteristicName] || 0) +
-      (skillStates[skillName]?.dots || 0) * 10;
-    const skill = skillStates[skillName];
-    return characteristicValue + (skill?.bonus || 0);
+    const characteristicValue = parseInt(characteristics[characteristicName] || 0, 10);
+    const dotsValue = skillStates[skillName]?.dots || 0;
+    const bonusValue = skillStates[skillName]?.bonus || 0;
+    return characteristicValue + dotsValue * 5 + bonusValue;
   };
 
-  const handleSkillUpdate = (skillName, field, value) => {
+  const handleDotPress = (skillName, index) => {
+    if (!isEditable) return;
     setSkillStates((prev) => ({
       ...prev,
-      [skillName]: {
-        ...prev[skillName],
-        [field]: field === 'dots' || field === 'bonus' ? parseInt(value) || 0 : value,
-      },
+      [skillName]: { ...prev[skillName], dots: index + 1 },
     }));
   };
 
@@ -152,60 +132,52 @@ export default function SkillsScreen({ isEditable }) {
     <>
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Skills</Text>
-
         {skills.map((skill) => (
           <View key={skill.name} style={styles.skillRow}>
-            <TouchableOpacity
-              onPress={() => rollSkill(skill.name, skill.characteristic)}
-            >
-              <Text style={styles.skillName}>
-                {skill.name} ({skill.characteristic})
+            <View style={styles.skillHeader}>
+              <Text style={styles.skillName}>{skill.name}</Text>
+              <Text style={styles.skillCharacteristic}>
+                ({skill.characteristic})
               </Text>
-              <Text style={styles.skillValue}>
-                Value: {calculateSkillValue(skill.name, skill.characteristic)}
-              </Text>
-            </TouchableOpacity>
-
-            <View style={styles.dotsContainer}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={[
-                    styles.dot,
-                    skillStates[skill.name]?.dots > i && styles.filledDot,
-                    !isEditable && styles.readOnlyDot,
-                  ]}
-                  onPress={() =>
-                    isEditable &&
-                    handleSkillUpdate(
-                      skill.name,
-                      'dots',
-                      skillStates[skill.name]?.dots === i + 1 ? i : i + 1
-                    )
-                  }
-                />
-              ))}
             </View>
-
-            <TextInput
-              style={[styles.input, !isEditable && styles.readOnly]}
-              editable={isEditable}
-              value={(skillStates[skill.name]?.bonus || 0).toString()}
-              onChangeText={(value) => handleSkillUpdate(skill.name, 'bonus', value)}
-              keyboardType="numeric"
-            />
-
-            <TextInput
-              style={[styles.notesInput, !isEditable && styles.readOnly]}
-              editable={isEditable}
-              placeholder="Notes..."
-              value={skillStates[skill.name]?.notes || ''}
-              onChangeText={(value) => handleSkillUpdate(skill.name, 'notes', value)}
-            />
+            <Text style={styles.skillValue}>
+              Value: {calculateSkillValue(skill.name, skill.characteristic)}
+            </Text>
+            <View style={styles.controls}>
+              <View style={styles.dotsContainer}>
+                {[...Array(5)].map((_, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.dot,
+                      skillStates[skill.name]?.dots > index && styles.filledDot,
+                    ]}
+                    onPress={() => handleDotPress(skill.name, index)}
+                  />
+                ))}
+              </View>
+              <TextInput
+                style={[styles.bonusInput, !isEditable && styles.readOnly]}
+                editable={isEditable}
+                value={(skillStates[skill.name]?.bonus || 0).toString()}
+                onChangeText={(value) =>
+                  setSkillStates((prev) => ({
+                    ...prev,
+                    [skill.name]: { ...prev[skill.name], bonus: parseInt(value, 10) || 0 },
+                  }))
+                }
+                keyboardType="numeric"
+              />
+              <TouchableOpacity
+                style={styles.rollButton}
+                onPress={() => rollSkill(skill.name, skill.characteristic)}
+              >
+                <Text style={styles.rollButtonText}>Roll</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>
-
       <DiceRollerScreen
         isVisible={isDiceRollerVisible}
         targetNumber={activeSkillValue}
@@ -218,66 +190,81 @@ export default function SkillsScreen({ isEditable }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5d6363',
+    backgroundColor: '#2e3440',
     padding: 16,
   },
   header: {
     fontSize: 24,
-    color: '#dfddd3',
+    color: '#eceff4',
     marginBottom: 16,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   skillRow: {
-    marginBottom: 16,
-    backgroundColor: '#535d75',
+    backgroundColor: '#3b4252',
     borderRadius: 8,
-    padding: 8,
+    padding: 10,
+    marginBottom: 12,
+  },
+  skillHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   skillName: {
-    color: '#dfddd3',
+    color: '#eceff4',
     fontSize: 18,
-    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  skillCharacteristic: {
+    color: '#88c0d0',
+    fontSize: 14,
   },
   skillValue: {
-    color: '#dfddd3',
+    color: '#d8dee9',
     fontSize: 16,
     marginBottom: 8,
-    fontWeight: 'bold',
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   dotsContainer: {
     flexDirection: 'row',
-    marginBottom: 8,
   },
   dot: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#dfddd3',
+    borderColor: '#d8dee9',
     marginHorizontal: 2,
   },
   filledDot: {
-    backgroundColor: '#dfddd3',
+    backgroundColor: '#88c0d0',
   },
-  readOnlyDot: {
-    opacity: 0.5,
-  },
-  input: {
-    backgroundColor: '#301a19',
-    color: '#dfddd3',
+  bonusInput: {
+    backgroundColor: '#4c566a',
+    color: '#eceff4',
     padding: 4,
     borderRadius: 4,
-    marginBottom: 8,
+    textAlign: 'center',
+    width: 50,
   },
-  notesInput: {
-    backgroundColor: '#301a19',
-    color: '#dfddd3',
-    padding: 8,
+  rollButton: {
+    backgroundColor: '#81a1c1',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
     borderRadius: 4,
   },
+  rollButtonText: {
+    color: '#2e3440',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   readOnly: {
-    backgroundColor: '#5d6363',
-    color: '#aaaaaa',
+    backgroundColor: '#4c566a',
+    color: '#d8dee9',
   },
 });

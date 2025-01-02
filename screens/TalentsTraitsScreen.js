@@ -5,9 +5,10 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  Button,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function TalentsTraitsScreen({ isEditable }) {
   const [data, setData] = useState({
@@ -15,24 +16,16 @@ export default function TalentsTraitsScreen({ isEditable }) {
     traits: 'Astartes...',
     specialAbilities: '',
     psychicDisciplines: '',
-    psychicTechniques: [
-      { name: '', sustain1: '', sustain2: '' },
-    ],
-    profitFactor: {
-      starting: '',
-      current: '',
-      misfortunes: '',
-    },
+    psychicTechniques: [{ name: '', sustain1: '', sustain2: '' }],
+    profitFactor: { starting: '', current: '', misfortunes: '' },
   });
 
-  // Load data from local storage on mount
   useEffect(() => {
+    // Load data from local storage on mount
     const loadData = async () => {
       try {
         const storedData = await AsyncStorage.getItem('talentsTraitsData');
-        if (storedData) {
-          setData(JSON.parse(storedData));
-        }
+        if (storedData) setData(JSON.parse(storedData));
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -41,8 +34,8 @@ export default function TalentsTraitsScreen({ isEditable }) {
     loadData();
   }, []);
 
-  // Save data to local storage whenever it changes
   useEffect(() => {
+    // Save data to local storage whenever it changes
     const saveData = async () => {
       try {
         await AsyncStorage.setItem('talentsTraitsData', JSON.stringify(data));
@@ -62,10 +55,7 @@ export default function TalentsTraitsScreen({ isEditable }) {
   const handleProfitFactorChange = (field, value) => {
     setData({
       ...data,
-      profitFactor: {
-        ...data.profitFactor,
-        [field]: value,
-      },
+      profitFactor: { ...data.profitFactor, [field]: value },
     });
   };
 
@@ -86,43 +76,59 @@ export default function TalentsTraitsScreen({ isEditable }) {
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Talents & Traits</Text>
 
-      <Text style={styles.label}>Talents</Text>
-      <TextInput
-        style={[styles.inputMulti, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.talents}
-        onChangeText={(value) => handleInputChange('talents', value)}
-        multiline
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Talents</Text>
+        <TextInput
+          style={[styles.inputMulti, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.talents}
+          onChangeText={(value) => handleInputChange('talents', value)}
+          multiline
+          placeholder="Enter talents..."
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Traits</Text>
-      <TextInput
-        style={[styles.inputMulti, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.traits}
-        onChangeText={(value) => handleInputChange('traits', value)}
-        multiline
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Traits</Text>
+        <TextInput
+          style={[styles.inputMulti, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.traits}
+          onChangeText={(value) => handleInputChange('traits', value)}
+          multiline
+          placeholder="Enter traits..."
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Special Abilities</Text>
-      <TextInput
-        style={[styles.inputMulti, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.specialAbilities}
-        onChangeText={(value) => handleInputChange('specialAbilities', value)}
-        multiline
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Special Abilities</Text>
+        <TextInput
+          style={[styles.inputMulti, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.specialAbilities}
+          onChangeText={(value) => handleInputChange('specialAbilities', value)}
+          multiline
+          placeholder="Enter special abilities..."
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Psychic Disciplines</Text>
-      <TextInput
-        style={[styles.inputMulti, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.psychicDisciplines}
-        onChangeText={(value) => handleInputChange('psychicDisciplines', value)}
-        multiline
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Psychic Disciplines</Text>
+        <TextInput
+          style={[styles.inputMulti, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.psychicDisciplines}
+          onChangeText={(value) => handleInputChange('psychicDisciplines', value)}
+          multiline
+          placeholder="Enter psychic disciplines..."
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Psychic Techniques</Text>
+      <Text style={styles.header}>Psychic Techniques</Text>
       {data.psychicTechniques.map((technique, index) => (
         <View key={index} style={styles.techniqueContainer}>
           <TextInput
@@ -130,56 +136,71 @@ export default function TalentsTraitsScreen({ isEditable }) {
             editable={isEditable}
             value={technique.name}
             onChangeText={(value) => handleTechniqueChange(index, 'name', value)}
-            placeholder="Name"
+            placeholder="Technique Name"
+            placeholderTextColor="#dfddd3"
           />
           <TextInput
             style={[styles.input, !isEditable && styles.readOnly]}
             editable={isEditable}
             value={technique.sustain1}
             onChangeText={(value) => handleTechniqueChange(index, 'sustain1', value)}
-            placeholder="Sustain"
+            placeholder="Sustain 1"
+            placeholderTextColor="#dfddd3"
           />
           <TextInput
             style={[styles.input, !isEditable && styles.readOnly]}
             editable={isEditable}
             value={technique.sustain2}
             onChangeText={(value) => handleTechniqueChange(index, 'sustain2', value)}
-            placeholder="Sustain"
+            placeholder="Sustain 2"
+            placeholderTextColor="#dfddd3"
           />
         </View>
       ))}
       {isEditable && (
-        <Button title="Add Technique" onPress={addTechnique} />
+        <TouchableOpacity style={styles.addButton} onPress={addTechnique}>
+          <Icon name="add" size={24} color="#dfddd3" />
+          <Text style={styles.addButtonText}>Add Technique</Text>
+        </TouchableOpacity>
       )}
 
       <Text style={styles.header}>Profit Factor</Text>
+      <View style={styles.section}>
+        <Text style={styles.label}>Starting</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.profitFactor.starting}
+          onChangeText={(value) => handleProfitFactorChange('starting', value)}
+          placeholder="Starting Profit Factor"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Starting</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.profitFactor.starting}
-        onChangeText={(value) => handleProfitFactorChange('starting', value)}
-        placeholder="Starting Profit Factor"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Current</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.profitFactor.current}
+          onChangeText={(value) => handleProfitFactorChange('current', value)}
+          placeholder="Current Profit Factor"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
 
-      <Text style={styles.label}>Current</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.profitFactor.current}
-        onChangeText={(value) => handleProfitFactorChange('current', value)}
-        placeholder="Current Profit Factor"
-      />
-
-      <Text style={styles.label}>Misfortunes</Text>
-      <TextInput
-        style={[styles.input, !isEditable && styles.readOnly]}
-        editable={isEditable}
-        value={data.profitFactor.misfortunes}
-        onChangeText={(value) => handleProfitFactorChange('misfortunes', value)}
-        placeholder="Misfortunes"
-      />
+      <View style={styles.section}>
+        <Text style={styles.label}>Misfortunes</Text>
+        <TextInput
+          style={[styles.input, !isEditable && styles.readOnly]}
+          editable={isEditable}
+          value={data.profitFactor.misfortunes}
+          onChangeText={(value) => handleProfitFactorChange('misfortunes', value)}
+          placeholder="Misfortunes"
+          placeholderTextColor="#dfddd3"
+        />
+      </View>
+      <View style={styles.spacer} />
     </ScrollView>
   );
 }
@@ -187,23 +208,23 @@ export default function TalentsTraitsScreen({ isEditable }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5d6363',
+    backgroundColor: '#2e3440',
     padding: 16,
   },
   header: {
     fontSize: 24,
-    color: '#dfddd3',
+    color: '#eceff4',
     marginBottom: 16,
     fontWeight: 'bold',
   },
   label: {
     fontSize: 16,
-    color: '#dfddd3',
+    color: '#eceff4',
     marginBottom: 8,
   },
   inputMulti: {
-    backgroundColor: '#535d75',
-    color: '#dfddd3',
+    backgroundColor: '#4c566a',
+    color: '#eceff4',
     padding: 8,
     borderRadius: 4,
     marginBottom: 16,
@@ -211,16 +232,41 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   input: {
-    backgroundColor: '#535d75',
-    color: '#dfddd3',
+    backgroundColor: '#4c566a',
+    color: '#eceff4',
     padding: 8,
     borderRadius: 4,
     marginBottom: 8,
   },
   techniqueContainer: {
     marginBottom: 16,
+    padding: 10,
+    backgroundColor: '#3b4252',
+    borderRadius: 8,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#5e81ac',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  addButtonText: {
+    color: '#eceff4',
+    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  section: {
+    marginBottom: 16,
+  },
+  spacer: {
+    height: 100,
   },
   readOnly: {
-    backgroundColor: '#5d6363',
+    backgroundColor: '#3b4252',
+    color: '#aeb5c0',
   },
 });
