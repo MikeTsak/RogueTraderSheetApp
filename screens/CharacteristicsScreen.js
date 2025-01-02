@@ -3,7 +3,9 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DiceRollerScreen from '../modules/DiceRollerScreen';
 
-export default function CharacteristicsScreen({ isEditable }) {
+export default function CharacteristicsScreen({ route = {}, isEditable }) {
+  const { characterId = 'default_character' } = route.params || {}; // Fallback to a default characterId
+
   const defaultCharacteristics = {
     weaponSkill: '00',
     ballisticSkill: '00',
@@ -25,11 +27,10 @@ export default function CharacteristicsScreen({ isEditable }) {
   const [activeTargetNumber, setActiveTargetNumber] = useState(null);
 
   useEffect(() => {
-    // Load characteristics from AsyncStorage
     const loadCharacteristics = async () => {
       try {
-        const storedCharacteristics = await AsyncStorage.getItem('characteristics');
-        const storedDots = await AsyncStorage.getItem('activeDots');
+        const storedCharacteristics = await AsyncStorage.getItem(`characteristics_${characterId}`);
+        const storedDots = await AsyncStorage.getItem(`activeDots_${characterId}`);
 
         if (storedCharacteristics) setCharacteristics(JSON.parse(storedCharacteristics));
         if (storedDots) setActiveDots(JSON.parse(storedDots));
@@ -38,20 +39,19 @@ export default function CharacteristicsScreen({ isEditable }) {
       }
     };
     loadCharacteristics();
-  }, []);
+  }, [characterId]);
 
   useEffect(() => {
-    // Save characteristics and dots to AsyncStorage whenever they change
     const saveData = async () => {
       try {
-        await AsyncStorage.setItem('characteristics', JSON.stringify(characteristics));
-        await AsyncStorage.setItem('activeDots', JSON.stringify(activeDots));
+        await AsyncStorage.setItem(`characteristics_${characterId}`, JSON.stringify(characteristics));
+        await AsyncStorage.setItem(`activeDots_${characterId}`, JSON.stringify(activeDots));
       } catch (error) {
         console.error('Failed to save data:', error);
       }
     };
     saveData();
-  }, [characteristics, activeDots]);
+  }, [characteristics, activeDots, characterId]);
 
   const showDiceRoller = (key) => {
     const baseValue = parseInt(characteristics[key]) || 0;
@@ -130,13 +130,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#3e4551',
     padding: 16,
+    // You can set a default font for normal text here (optional):
+    // fontFamily: 'SpaceGrotesk_400Regular',
   },
   header: {
     fontSize: 28,
     color: '#dfddd3',
     marginBottom: 20,
-    fontWeight: 'bold',
     textAlign: 'center',
+    // Use the bold font family explicitly
+    fontFamily: 'SpaceGrotesk_700Bold',
   },
   grid: {
     flexDirection: 'row',
@@ -155,6 +158,8 @@ const styles = StyleSheet.create({
     color: '#dfddd3',
     marginBottom: 8,
     textAlign: 'center',
+    // Use the bold font for labels
+    fontFamily: 'SpaceGrotesk_700Bold',
   },
   input: {
     backgroundColor: '#2e3440',
@@ -163,6 +168,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     textAlign: 'center',
     fontSize: 18,
+    // Use the regular font for inputs
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   readOnly: {
     backgroundColor: '#5d6363',

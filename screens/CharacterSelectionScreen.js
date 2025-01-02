@@ -86,6 +86,7 @@ export default function CharacterSelectionScreen({ navigation }) {
   function handleSelectCharacter(characterId) {
     navigation.navigate('RogueSheet', { characterId });
   }
+  
 
   async function handleDeleteCharacter(characterId) {
     Alert.alert(
@@ -130,7 +131,7 @@ export default function CharacterSelectionScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Character Selection</Text>
+      <Text style={styles.header}>Character Selection (not working)</Text>
       {characters.length === 0 ? (
         <Text style={styles.empty}>No characters found. Create one to get started!</Text>
       ) : (

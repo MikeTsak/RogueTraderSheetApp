@@ -15,17 +15,23 @@ export default function TalentsTraitsScreen({ isEditable }) {
     talents: 'Mighty Shot',
     traits: 'Astartes...',
     specialAbilities: '',
-    psychicDisciplines: '',
+    psychicDisciplines: [{ name: '', description: '' }],
     psychicTechniques: [{ name: '', sustain1: '', sustain2: '' }],
     profitFactor: { starting: '', current: '', misfortunes: '' },
   });
 
   useEffect(() => {
-    // Load data from local storage on mount
     const loadData = async () => {
       try {
         const storedData = await AsyncStorage.getItem('talentsTraitsData');
-        if (storedData) setData(JSON.parse(storedData));
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setData((prevState) => ({
+            ...prevState,
+            ...parsedData,
+            psychicDisciplines: parsedData.psychicDisciplines || [],
+          }));
+        }
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -35,7 +41,6 @@ export default function TalentsTraitsScreen({ isEditable }) {
   }, []);
 
   useEffect(() => {
-    // Save data to local storage whenever it changes
     const saveData = async () => {
       try {
         await AsyncStorage.setItem('talentsTraitsData', JSON.stringify(data));
@@ -47,7 +52,6 @@ export default function TalentsTraitsScreen({ isEditable }) {
     saveData();
   }, [data]);
 
-  // Handlers for updates
   const handleInputChange = (field, value) => {
     setData({ ...data, [field]: value });
   };
@@ -65,10 +69,23 @@ export default function TalentsTraitsScreen({ isEditable }) {
     setData({ ...data, psychicTechniques: updatedTechniques });
   };
 
+  const handleDisciplineChange = (index, field, value) => {
+    const updatedDisciplines = [...data.psychicDisciplines];
+    updatedDisciplines[index][field] = value;
+    setData({ ...data, psychicDisciplines: updatedDisciplines });
+  };
+
   const addTechnique = () => {
     setData({
       ...data,
       psychicTechniques: [...data.psychicTechniques, { name: '', sustain1: '', sustain2: '' }],
+    });
+  };
+
+  const addDiscipline = () => {
+    setData({
+      ...data,
+      psychicDisciplines: [...data.psychicDisciplines, { name: '', description: '' }],
     });
   };
 
@@ -115,18 +132,34 @@ export default function TalentsTraitsScreen({ isEditable }) {
         />
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>Psychic Disciplines</Text>
-        <TextInput
-          style={[styles.inputMulti, !isEditable && styles.readOnly]}
-          editable={isEditable}
-          value={data.psychicDisciplines}
-          onChangeText={(value) => handleInputChange('psychicDisciplines', value)}
-          multiline
-          placeholder="Enter psychic disciplines..."
-          placeholderTextColor="#dfddd3"
-        />
-      </View>
+      <Text style={styles.header}>Psychic Disciplines</Text>
+      {data.psychicDisciplines.map((discipline, index) => (
+        <View key={index} style={styles.disciplineContainer}>
+          <TextInput
+            style={[styles.input, !isEditable && styles.readOnly]}
+            editable={isEditable}
+            value={discipline.name}
+            onChangeText={(value) => handleDisciplineChange(index, 'name', value)}
+            placeholder="Discipline Name"
+            placeholderTextColor="#dfddd3"
+          />
+          <TextInput
+            style={[styles.inputMulti, !isEditable && styles.readOnly]}
+            editable={isEditable}
+            value={discipline.description}
+            onChangeText={(value) => handleDisciplineChange(index, 'description', value)}
+            placeholder="Description"
+            placeholderTextColor="#dfddd3"
+            multiline
+          />
+        </View>
+      ))}
+      {isEditable && (
+        <TouchableOpacity style={styles.addButton} onPress={addDiscipline}>
+          <Icon name="add" size={24} color="#dfddd3" />
+          <Text style={styles.addButtonText}>Add Discipline</Text>
+        </TouchableOpacity>
+      )}
 
       <Text style={styles.header}>Psychic Techniques</Text>
       {data.psychicTechniques.map((technique, index) => (
@@ -215,12 +248,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#eceff4',
     marginBottom: 16,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold', // Bold header
   },
   label: {
     fontSize: 16,
     color: '#eceff4',
     marginBottom: 8,
+    fontFamily: 'SpaceGrotesk_700Bold', // Bold label
   },
   inputMulti: {
     backgroundColor: '#4c566a',
@@ -230,6 +264,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     minHeight: 60,
     textAlignVertical: 'top',
+    fontFamily: 'SpaceGrotesk_400Regular', // Regular input text
   },
   input: {
     backgroundColor: '#4c566a',
@@ -237,6 +272,13 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
     marginBottom: 8,
+    fontFamily: 'SpaceGrotesk_400Regular', // Regular input text
+  },
+  disciplineContainer: {
+    marginBottom: 16,
+    padding: 10,
+    backgroundColor: '#3b4252',
+    borderRadius: 8,
   },
   techniqueContainer: {
     marginBottom: 16,
@@ -257,7 +299,7 @@ const styles = StyleSheet.create({
     color: '#eceff4',
     marginLeft: 8,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold', // Bold text for add button
   },
   section: {
     marginBottom: 16,
@@ -268,5 +310,6 @@ const styles = StyleSheet.create({
   readOnly: {
     backgroundColor: '#3b4252',
     color: '#aeb5c0',
+    fontFamily: 'SpaceGrotesk_400Regular', // Regular text for read-only fields
   },
 });

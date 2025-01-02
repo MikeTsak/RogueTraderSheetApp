@@ -202,42 +202,6 @@ export default function GearScreen({ isEditable }) {
               placeholderTextColor="#dfddd3"
             />
           </View>
-          <View style={styles.weaponRow}>
-            <TextInput
-              style={styles.input}
-              editable={isEditable}
-              placeholder="Range"
-              value={weapon.range}
-              onChangeText={(value) => updateWeapon(index, 'range', value)}
-              placeholderTextColor="#dfddd3"
-            />
-            <TextInput
-              style={styles.input}
-              editable={isEditable}
-              placeholder="ROF"
-              value={weapon.rof}
-              onChangeText={(value) => updateWeapon(index, 'rof', value)}
-              placeholderTextColor="#dfddd3"
-            />
-          </View>
-          <View style={styles.weaponRow}>
-            <TextInput
-              style={styles.input}
-              editable={isEditable}
-              placeholder="Clip"
-              value={weapon.clip}
-              onChangeText={(value) => updateWeapon(index, 'clip', value)}
-              placeholderTextColor="#dfddd3"
-            />
-            <TextInput
-              style={styles.input}
-              editable={isEditable}
-              placeholder="Reload"
-              value={weapon.reload}
-              onChangeText={(value) => updateWeapon(index, 'reload', value)}
-              placeholderTextColor="#dfddd3"
-            />
-          </View>
           <TextInput
             style={styles.inputMulti}
             editable={isEditable}
@@ -280,7 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#eceff4',
     marginBottom: 16,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     textAlign: 'center',
   },
   inputMulti: {
@@ -291,6 +255,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     minHeight: 60,
     textAlignVertical: 'top',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   input: {
     flex: 1,
@@ -299,6 +264,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
     marginBottom: 8,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   armorContainer: {
     marginBottom: 16,
@@ -315,7 +281,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: '#eceff4',
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     marginBottom: 8,
   },
   weaponContainer: {
@@ -327,7 +293,7 @@ const styles = StyleSheet.create({
   weaponHeader: {
     color: '#eceff4',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     marginBottom: 8,
   },
   weaponRow: {
@@ -351,7 +317,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#eceff4',
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
   },
   spacer: {
     height: 50,

@@ -87,12 +87,16 @@ export default function TabNavigator({ route, navigation }) {
         <Tab.Navigator
           screenOptions={{
             tabBarStyle: { backgroundColor: '#535d75' },
-            tabBarLabelStyle: { color: '#dfddd3', fontWeight: 'bold' },
+            tabBarLabelStyle: {
+              color: '#dfddd3',
+              fontFamily: 'SpaceGrotesk_700Bold',
+              fontSize: 12,
+            },
             tabBarIndicatorStyle: { backgroundColor: '#dfddd3' },
             swipeEnabled: true,
           }}
         >
-          <Tab.Screen name="CharacterInfo">
+          <Tab.Screen name="Info">
             {() => (
               <CharacterInfoScreen
                 characterData={characterData}
@@ -101,7 +105,7 @@ export default function TabNavigator({ route, navigation }) {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Characteristics">
+          <Tab.Screen name="Char">
             {() => (
               <CharacteristicsScreen
                 characterData={characterData}
@@ -110,7 +114,7 @@ export default function TabNavigator({ route, navigation }) {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Skills">
+          <Tab.Screen name="Skill">
             {() => (
               <SkillsScreen
                 characterData={characterData}
@@ -119,7 +123,7 @@ export default function TabNavigator({ route, navigation }) {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="TalentsTraits">
+          <Tab.Screen name="T&T">
             {() => (
               <TalentsTraitsScreen
                 characterData={characterData}
@@ -137,7 +141,7 @@ export default function TabNavigator({ route, navigation }) {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Statistics">
+          <Tab.Screen name="Stat">
             {() => (
               <StatistcsScreen
                 characterData={characterData}
@@ -146,7 +150,7 @@ export default function TabNavigator({ route, navigation }) {
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="Notes">
+          <Tab.Screen name="Note">
             {() => (
               <Notesscreen
                 characterData={characterData}
@@ -180,7 +184,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: '#dfddd3',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     marginLeft: 16,
   },
   editButtonContainer: {
@@ -201,5 +205,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     color: '#dfddd3',
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
 });

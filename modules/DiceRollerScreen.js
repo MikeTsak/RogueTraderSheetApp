@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
 export default function DiceRollerScreen({ isVisible, targetNumber, onClose }) {
   const [rollResult, setRollResult] = useState(null);
@@ -12,7 +12,7 @@ export default function DiceRollerScreen({ isVisible, targetNumber, onClose }) {
       setRollResult(null);
       setIsFlipped(false);
       setCanFlipToSuccess(false);
-      setLocalTargetNumber(targetNumber); // Sync local state with the passed target number
+      setLocalTargetNumber(targetNumber);
     }
   }, [isVisible, targetNumber]);
 
@@ -20,7 +20,7 @@ export default function DiceRollerScreen({ isVisible, targetNumber, onClose }) {
     const result = Math.floor(Math.random() * 100) + 1;
     setRollResult(result);
     setIsFlipped(false);
-    checkFlipToSuccess(result); // Check if flipping can result in a success
+    checkFlipToSuccess(result);
   };
 
   const flipResult = () => {
@@ -53,36 +53,22 @@ export default function DiceRollerScreen({ isVisible, targetNumber, onClose }) {
     if (isCriticalFailure(rollResult)) return '💀 Critical Failure! 💀';
     return '❌ Failure';
   };
-  
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="slide">
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.header}>🎲Dice Roller🎲</Text>
-
-          {/* Target Number Display */}
           <Text style={styles.label}>Target Number: {localTargetNumber}</Text>
-
-          {/* Result Circle */}
-          <TouchableOpacity
-            style={styles.resultContainer}
-            onPress={rollDice}
-          >
+          <TouchableOpacity style={styles.resultContainer} onPress={rollDice}>
             <Text style={styles.resultText}>
               {rollResult !== null ? rollResult : '--'}
             </Text>
           </TouchableOpacity>
-
-          {/* Result Message */}
           <Text style={styles.resultMessage}>{renderResultMessage()}</Text>
-
-          {/* Roll Dice Button */}
           <TouchableOpacity style={[styles.button, styles.buttonActive]} onPress={rollDice}>
             <Text style={styles.buttonText}>Roll Dice</Text>
           </TouchableOpacity>
-
-          {/* Spend Faith to Flip Button */}
           {canFlipToSuccess && !isFlipped && (
             <TouchableOpacity
               style={[styles.button, styles.buttonActive]}
@@ -91,8 +77,6 @@ export default function DiceRollerScreen({ isVisible, targetNumber, onClose }) {
               <Text style={styles.buttonText}>✨ Spend Faith to Succeed ✨</Text>
             </TouchableOpacity>
           )}
-
-          {/* Close Button */}
           <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={onClose}>
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
@@ -122,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#dfddd3',
     marginBottom: 16,
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     textShadowColor: '#692210',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2,
@@ -131,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#dfddd3',
     marginBottom: 8,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   resultContainer: {
     width: 120,
@@ -146,7 +131,7 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 42,
     color: '#dfddd3',
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     textShadowColor: '#301a19',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
@@ -155,6 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#dfddd3',
     marginBottom: 16,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
   button: {
     paddingVertical: 10,
@@ -173,7 +159,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: '#dfddd3',
-    fontWeight: 'bold',
+    fontFamily: 'SpaceGrotesk_700Bold',
     textAlign: 'center',
   },
   closeButton: {

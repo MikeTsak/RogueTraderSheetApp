@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RougeTraderSheet",
-    "slug": "RougeTraderSheet",
+    "name": "RogueTraderSheet",
+    "slug": "RogueTraderSheet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2e3440"
     },
     "ios": {
       "supportsTablet": true
@@ -18,11 +18,18 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2e3440"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "description": "A Warhammer 40k Rogue Trader character sheet saver.",
+    "githubUrl": "https://github.com/MikeTsak/RogueTraderSheetApp",
+    "owner": "Michail Tsakiroglou",
+    "privacy": "public",
+    "extra": {
+      "website": "https://miketsak.gr"
     }
   }
 }

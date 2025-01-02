@@ -1,4 +1,3 @@
-// screens/CharacterInfoScreen.js
 import React, { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -122,12 +121,13 @@ export default function CharacterInfoScreen({
       <View style={styles.section}>
         <Text style={styles.label}>Motivation</Text>
         <TextInput
-          style={[styles.input, !isEditable && styles.readOnly]}
+          style={[styles.input, styles.textArea, !isEditable && styles.readOnly]}
           editable={isEditable}
           value={characterData.motivation}
           onChangeText={(val) => handleInputChange('motivation', val)}
           placeholder="Enter Motivation"
           placeholderTextColor="#dfddd3"
+          multiline
         />
       </View>
 
@@ -191,15 +191,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#5d6363',
     padding: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'SpaceGrotesk_400Regular', // Normal text in container
   },
   header: {
     fontSize: 28,
     color: '#dfddd3',
     marginBottom: 16,
-    fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'SpaceGrotesk_700Bold', // Bold version
   },
   section: {
     marginBottom: 24,
@@ -208,14 +207,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#dfddd3',
     marginBottom: 8,
-    fontWeight: 'bold',
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'SpaceGrotesk_700Bold', // Bold version
   },
   labelSmall: {
     fontSize: 16,
     color: '#dfddd3',
     marginBottom: 4,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'SpaceGrotesk_400Regular', // You can keep normal weight here
   },
   input: {
     backgroundColor: '#535d75',
